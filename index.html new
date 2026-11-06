@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Haryanvi AI Studio Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07080b;
+      --card-bg: #111318;
+      --card-border: #1d212b;
+      --card-neon: rgba(255, 118, 46, 0.35);
+      --primary: #FF762E;
+      --primary-hover: #ff5e0a;
+      --primary-gradient: linear-gradient(135deg, #FF762E 0%, #FF3D00 100%);
+      --text-main: #FFFFFF;
+      --text-sub: #7D8597;
+      --success: #00E676;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 90px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Glowing Orbs */
+    .ambient-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .glow-orb-1, .glow-orb-2 {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.2;
+      animation: floatOrbs 14s infinite alternate ease-in-out;
+    }
+    .glow-orb-1 {
+      width: 280px;
+      height: 280px;
+      background: #FF762E;
+      top: -60px;
+      left: -60px;
+    }
+    .glow-orb-2 {
+      width: 320px;
+      height: 320px;
+      background: #FF3D00;
+      bottom: 80px;
+      right: -70px;
+      animation-duration: 18s;
+    }
+    @keyframes floatOrbs {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(60px, 80px) scale(1.15); }
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(7, 8, 11, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 118, 46, 0.15);
+      z-index: 40;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .brand-wrap span { color: var(--primary); }
+    .logo-pulse {
+      width: 28px;
+      height: 28px;
+      animation: pulseGlow 2.5s infinite ease-in-out;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 2px #FF762E); transform: scale(1); }
+      50% { filter: drop-shadow(0 0 10px #FF762E); transform: scale(1.08); }
+    }
+    .tag-pro {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--primary);
+      background: rgba(255, 118, 46, 0.12);
+      border: 1px solid rgba(255, 118, 46, 0.35);
+      padding: 4px 10px;
+      border-radius: 20px;
+      box-shadow: 0 0 12px rgba(255, 118, 46, 0.15);
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .page-head h1 {
+      font-size: 1.55rem;
+      font-weight: 800;
+      line-height: 1.2;
+      background: linear-gradient(180deg, #ffffff 40%, #b0b8c4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+    }
+    .page-head p {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+
+    /* Cards */
+    .app-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-neon {
+      border: 1px solid var(--card-neon);
+      box-shadow: 0 0 18px rgba(255, 118, 46, 0.08);
+    }
+    .card-neon:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 22px rgba(255, 118, 46, 0.25);
+    }
+
+    /* Tabs */
+    .tabs-wrap {
+      display: flex;
+      background: #090a0d;
+      border: 1px solid #1c202a;
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .pill-btn {
+      flex: 1;
+      padding: 9px 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-sub);
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .pill-btn.active {
+      background: #1c202c;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    /* 2x2 Selectors */
+    .selectors-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .select-item {
+      background: #0b0c10;
+      border: 1px solid #1b1e27;
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .select-label {
+      font-size: 0.68rem;
+      color: var(--text-sub);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .select-item select {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      outline: none;
+      width: 100%;
+    }
+
+    /* Input Box */
+    .input-box-wrap {
+      background: #090a0d;
+      border: 1px solid #1a1d26;
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .input-box-wrap textarea {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      resize: none;
+      width: 100%;
+      min-height: 75px;
+      line-height: 1.45;
+    }
+    .input-box-wrap textarea::placeholder {
+      color: #484f60;
+    }
+    .input-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #13161f;
+      padding-top: 8px;
+    }
+    .char-count {
+      font-size: 0.72rem;
+      color: var(--text-sub);
+    }
+    .mic-inline-btn {
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Waveform Panel */
+    .waveform-panel {
+      background: #090a0d;
+      border: 1px solid #171a24;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .wave-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-sub);
+    }
+    .bars-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 34px;
+    }
+    .wave-bar {
+      width: 4px;
+      border-radius: 4px;
+      background: #202532;
+      height: 6px;
+      transition: height 0.12s ease, background 0.12s ease;
+    }
+    .wave-bar.active {
+      background: var(--primary);
+    }
+
+    /* Gradient Buttons */
+    .primary-btn {
+      background: linear-gradient(135deg, #FF762E 0%, #FF3D00 50%, #FF762E 100%);
+      background-size: 200% auto;
+      border: none;
+      color: #050608;
+      padding: 13px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      animation: gradShine 4s linear infinite;
+      box-shadow: 0 4px 18px rgba(255, 118, 46, 0.35);
+      transition: transform 0.15s ease;
+    }
+    .primary-btn:active {
+      transform: scale(0.98);
+    }
+    @keyframes gradShine {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    /* Result Box */
+    .result-container {
+      background: #08090c;
+      border: 1px solid #1c202a;
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 80px;
+      color: var(--primary);
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    .typing-cursor::after {
+      content: '|';
+      color: var(--primary);
+      animation: blink 0.7s infinite;
+      font-weight: 700;
+      margin-left: 2px;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    .output-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 6px;
+    }
+    .action-sub-btn {
+      background: #11141c;
+      border: 1px solid #1f232f;
+      color: #fff;
+      padding: 9px 4px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: border-color 0.2s;
+    }
+    .action-sub-btn:hover {
+      border-color: var(--primary);
+    }
+    .whatsapp-btn {
+      background: rgba(0, 230, 118, 0.12);
+      border-color: rgba(0, 230, 118, 0.3);
+      color: #00E676;
+    }
+
+    /* Grid Tools */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .tool-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .tool-box:active {
+      transform: scale(0.97);
+      border-color: var(--primary);
+    }
+    .feature-svg-icon {
+      width: 40px;
+      height: 40px;
+      animation: floatIcon 3.5s ease-in-out infinite alternate;
+    }
+    @keyframes floatIcon {
+      0% { transform: translateY(0); filter: drop-shadow(0 2px 5px rgba(0,0,0,0.4)); }
+      100% { transform: translateY(-5px); filter: drop-shadow(0 6px 10px rgba(255,118,46,0.3)); }
+    }
+    .tool-box h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    /* Trending Words */
+    .trend-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+    }
+    .trend-row::-webkit-scrollbar { display: none; }
+    .trend-pill {
+      background: #11141b;
+      border: 1px solid #202430;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .trend-pill span { color: var(--primary); font-weight: 700; }
+
+    /* Chat Elements */
+    .chat-window {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 280px;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .chat-bubble {
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      max-width: 84%;
+    }
+    .chat-user {
+      align-self: flex-end;
+      background: var(--primary);
+      color: #000;
+      font-weight: 600;
+      border-bottom-right-radius: 2px;
+    }
+    .chat-bot {
+      align-self: flex-start;
+      background: #141720;
+      border: 1px solid #202430;
+      color: #fff;
+      border-bottom-left-radius: 2px;
+    }
+
+    /* Fixed Bottom Bar */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(7, 8, 11, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid #161820;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      z-index: 50;
+    }
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .nav-btn svg { width: 22px; height: 22px; fill: currentColor; }
+    .nav-btn.active {
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .page-view { display: none; flex-direction: column; gap: 16px; }
+    .page-view.active { display: flex; }
+    canvas { width: 100%; border-radius: 12px; background: #000; border: 1px solid #1c202a; }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow">
+    <div class="glow-orb-1"></div>
+    <div class="glow-orb-2"></div>
+  </div>
+
+  <header class="top-nav">
+    <div class="brand-wrap">
+      <svg class="logo-pulse" viewBox="0 0 32 32">
+        <circle cx="16" cy="16" r="14" fill="none" stroke="#FF762E" stroke-width="3"/>
+        <path d="M11 9v14M21 9v14M11 16h10" stroke="#FF762E" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <div>Haryanvi <span>AI</span></div>
+    </div>
+    <div class="tag-pro">STUDIO V3.0</div>
+  </header>
+
+  <main class="container">
+
+    <!-- TAB 1: TRANSLATOR & VOICE STUDIO -->
+    <section id="view-home" class="page-view active">
+      <div class="page-head">
+        <h1>Voice & Text Studio</h1>
+        <p>Convert Hindi and English into pure Haryanvi dialects.</p>
+      </div>
+
+      <div class="app-card card-neon">
+        <div class="tabs-wrap">
+          <button class="pill-btn active" id="tab-hi" onclick="setMode('hi')">Hindi ➔ Haryanvi</button>
+          <button class="pill-btn" id="tab-en" onclick="setMode('en')">English ➔ Haryanvi</button>
+        </div>
+
+        <div class="selectors-grid">
+          <div class="select-item">
+            <span class="select-label">Dialect</span>
+            <select id="dialect">
+              <option value="rohtak">Rohtak (ठेठ / Theth)</option>
+              <option value="hisar">Hisar (देसी / Bold)</option>
+              <option value="jind">Jind (भाईचारा / Desi)</option>
+            </select>
+          </div>
+          <div class="select-item">
+            <span class="select-label">Tone</span>
+            <select id="tone">
+              <option value="bold">Attitude / Bold</option>
+              <option value="casual">Casual / Friendly</option>
+              <option value="respect">Panchayat Respect</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-box-wrap">
+          <textarea id="src-text" placeholder="Yahan text likho ya mic button dabao..." oninput="updateCharCount()"></textarea>
+          <div class="input-meta-bar">
+            <span class="char-count" id="char-count">0 / 1000</span>
+            <button class="mic-inline-btn" onclick="startVoiceInput()">
+              <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+              <span>Record Voice</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Waveform Visualizer -->
+        <div class="waveform-panel">
+          <div class="wave-header">
+            <span id="voice-status">Audio Visualizer: Standby</span>
+            <span id="wave-timer">00:00</span>
+          </div>
+          <div class="bars-container" id="waveform">
+            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+            <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+          </div>
+        </div>
+
+        <button class="primary-btn" onclick="executeTranslation()">
+          Generate Translation
+        </button>
+
+        <div class="result-container" id="res-box">Result yahan dikhega...</div>
+
+        <div class="output-actions">
+          <button class="action-sub-btn" onclick="playAudioRobust()">🔊 Suno</button>
+          <button class="action-sub-btn" onclick="copyResult()">📋 Copy</button>
+          <button class="action-sub-btn whatsapp-btn" onclick="shareWhatsApp()">💬 Share</button>
+          <button class="action-sub-btn" onclick="clearInput()">🗑️ Clear</button>
+        </div>
+      </div>
+
+      <!-- Trending Section -->
+      <div style="font-size: 0.92rem; font-weight: 800;">🔥 Daily Trending Words</div>
+      <div class="trend-row">
+        <div class="trend-pill"><span>मरोड़</span> Attitude</div>
+        <div class="trend-pill"><span>गाल</span> Mohalla</div>
+        <div class="trend-pill"><span>टाबर</span> Kids</div>
+        <div class="trend-pill"><span>घणा</span> Bahut Jyada</div>
+        <div class="trend-pill"><span>किते</span> Kahan</div>
+        <div class="trend-pill"><span>रैबार</span> Sandesh</div>
+      </div>
+
+      <!-- Quick AI Tools -->
+      <div style="font-size: 0.92rem; font-weight: 800;">⚡ Quick AI Tools</div>
+      <div class="grid-2">
+        <div class="tool-box" onclick="goTo('reels')">
+          <svg class="feature-svg-icon" viewBox="0 0 48 48">
+            <rect x="8" y="8" width="32" height="32" rx="10" fill="#1b1e27" stroke="#FF762E" stroke-width="2"/>
+            <polygon points="20,16 32,24 20,32" fill="#FF762E"/>
+          </svg>
+          <h4>Reels Captions</h4>
+        </div>
+        <div class="tool-box" onclick="goTo('roast')">
+          <svg class="feature-svg-icon" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="22" fill="#1b1e27" stroke="#FF762E" stroke-width="2"/>
+            <path d="M15 28c3 4 15 4 18 0M17 18h2M29 18h2" stroke="#FF762E" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <h4>Desi Roast AI</h4>
+        </div>
+        <div class="tool-box" onclick="goTo('meme')">
+          <svg class="feature-svg-icon" viewBox="0 0 48 48">
+            <rect x="8" y="10" width="32" height="28" rx="6" fill="#1b1e27" stroke="#FF762E" stroke-width="2"/>
+            <circle cx="18" cy="22" r="3" fill="#FF762E"/>
+            <path d="M14 32c4-6 10-6 14 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <h4>Meme Studio</h4>
+        </div>
+        <div class="tool-box" onclick="goTo('quiz')">
+          <svg class="feature-svg-icon" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="22" fill="#1b1e27" stroke="#FF762E" stroke-width="2"/>
+            <text x="24" y="32" fill="#FF762E" font-size="22" font-weight="bold" text-anchor="middle">?</text>
+          </svg>
+          <h4>Interactive Quiz</h4>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: CHATBOT -->
+    <section id="view-chat" class="page-view">
+      <div class="page-head">
+        <h1>Haryanvi Chat AI</h1>
+        <p>Live conversations in authentic colloquial style.</p>
+      </div>
+
+      <div class="app-card card-neon">
+        <div class="chat-window" id="chat-stream">
+          <div class="chat-bubble chat-bot">राम-राम लाडले! बता के बात बूझनी सै? थारा भाई पूरा देसी जवाब देवेगा!</div>
+        </div>
+        <div class="input-box-wrap" style="padding: 10px 12px;">
+          <input type="text" id="chat-in" placeholder="Kayi baat likho..." style="background:transparent; border:none; color:#fff; width:100%; outline:none;" onkeypress="if(event.key==='Enter') sendChat()">
+        </div>
+        <button class="primary-btn" onclick="sen
