@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Haryanvi AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+Devanagari:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: #101114; color: #ffffff; padding-bottom: 80px; min-height: 100vh; overflow-x: hidden; }
+    .nav { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid #1f2228; position: sticky; top: 0; background: rgba(16, 17, 20, 0.95); backdrop-filter: blur(10px); z-index: 50; }
+    .logo { font-size: 1.25rem; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 6px; }
+    .logo span { color: #FF762E; }
+    .nav-btn { background: #1a1d24; border: 1px solid #282c35; color: #FF762E; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
+    .container { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+    .hero { text-align: center; padding: 8px 0; }
+    .hero h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 4px; }
+    .hero p { font-size: 0.85rem; color: #8e95a5; }
+    .card { background: #15181e; border: 1px solid #232732; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .tabs-row { display: flex; gap: 8px; }
+    .tab-btn { flex: 1; padding: 8px; border-radius: 10px; border: 1px solid #282d3a; background: #101114; color: #8e95a5; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-align: center; }
+    .tab-btn.active { background: rgba(255, 118, 46, 0.15); border-color: #FF762E; color: #FF762E; }
+    .select-box, input, textarea { width: 100%; background: #0c0d10; border: 1px solid #242935; border-radius: 10px; padding: 10px; color: #fff; font-size: 0.95rem; outline: none; }
+    .select-box:focus, input:focus, textarea:focus { border-color: #FF762E; }
+    .input-wrap { position: relative; }
+    .mic-btn { position: absolute; right: 10px; bottom: 12px; background: #20242f; border: 1px solid #323846; border-radius: 50%; width: 34px; height: 34px; color: #FF762E; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; }
+    .action-row { display: flex; gap: 8px; }
+    .btn-main { flex: 2; background: #FF762E; color: #000; border: none; padding: 12px; border-radius: 10px; font-weight: 800; font-size: 0.95rem; cursor: pointer; text-align: center; }
+    .btn-icon { flex: 1; background: #1c202a; border: 1px solid #2a3040; color: #fff; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .output-box { background: #0c0d10; border: 1px solid #242935; border-radius: 10px; padding: 12px; min-height: 70px; font-size: 1.05rem; line-height: 1.5; color: #FF762E; font-family: 'Noto Sans Devanagari', sans-serif; white-space: pre-wrap; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .tool-card { background: #15181e; border: 1px solid #232732; border-radius: 12px; padding: 12px; cursor: pointer; text-align: center; }
+    .tool-card:active { border-color: #FF762E; }
+    .tool-card h4 { font-size: 0.85rem; margin-top: 4px; }
+    .section-title { font-size: 1rem; font-weight: 700; color: #ffffff; margin-top: 6px; }
+    .badge { background: #1d212b; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; border: 1px solid #2b3140; color: #8e95a5; display: inline-block; }
+    .badge span { color: #fff; font-weight: 700; }
+    .page-view { display: none; }
+    .page-view.active { display: flex; flex-direction: column; gap: 16px; }
+    .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #101114; border-top: 1px solid #1f2228; display: flex; justify-content: space-around; padding: 10px 0; z-index: 50; }
+    .nav-item { color: #8e95a5; font-size: 0.75rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; background: none; border: none; }
+    .nav-item.active { color: #FF762E; }
+    .chat-bubble { padding: 10px; border-radius: 10px; font-size: 0.9rem; line-height: 1.4; max-width: 85%; }
+    .chat-user { background: #FF762E; color: #000; align-self: flex-end; }
+    .chat-bot { background: #1b1f27; color: #fff; align-self: flex-start; border: 1px solid #262c38; }
+    canvas { width: 100%; border-radius: 10px; border: 1px solid #282d3a; background: #000; }
+  </style>
+</head>
+<body>
+
+  <div class="nav">
+    <div class="logo">Haryanvi <span>AI</span></div>
+    <div class="nav-btn">Pro</div>
+  </div>
+
+  <div class="container">
+    
+    <!-- PAGE 1: TRANSLATE & HOME -->
+    <div id="view-home" class="page-view active">
+      <div class="hero">
+        <h1>Baat Karo Haryanvi Mein!</h1>
+        <p>Translate Hindi & English into authentic Haryanvi.</p>
+      </div>
+
+      <div class="card">
+        <div class="tabs-row">
+          <button class="tab-btn active" id="tab-hi" onclick="setMode('hi')">Hindi ➔ Haryanvi</button>
+          <button class="tab-btn" id="tab-en" onclick="setMode('en')">English ➔ Haryanvi</button>
+        </div>
+
+        <select id="dialect" class="select-box">
+          <option value="rohtak">Dialect: Rohtak (ठेठ / Theth)</option>
+          <option value="hisar">Dialect: Hisar (Desi Bold)</option>
+          <option value="jind">Dialect: Jind (Bhaichara)</option>
+        </select>
+
+        <div class="input-wrap">
+          <textarea id="src-text" rows="3" placeholder="Yahan type karo ya mic dabao..."></textarea>
+          <button class="mic-btn" onclick="startMic()">🎤</button>
+        </div>
+
+        <div class="action-row">
+          <button class="btn-main" onclick="translateNow()">Translate</button>
+          <button class="btn-icon" onclick="clearInput()">Clear</button>
+        </div>
+
+        <div class="output-box" id="res-box">Result yahan aayega...</div>
+
+        <div class="action-row">
+          <button class="btn-icon" onclick="playAudio()">🔊 Listen</button>
+          <button class="btn-icon" onclick="copyResult()">📋 Copy</button>
+        </div>
+      </div>
+
+      <div class="section-title">Trending Words Today</div>
+      <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;">
+        <div class="badge"><span>मरोड़:</span> Attitude</div>
+        <div class="badge"><span>गाल:</span> Street / Mohalla</div>
+        <div class="badge"><span>टाबर:</span> Kids</div>
+        <div class="badge"><span>रैबार:</span> Message</div>
+      </div>
+
+      <div class="section-title">Quick Tools</div>
+      <div class="grid-2">
+        <div class="tool-card" onclick="goTo('dialogue')">
+          <div>💥</div>
+          <h4>Attitude Dialogues</h4>
+        </div>
+        <div class="tool-card" onclick="goTo('meme')">
+          <div>🎨</div>
+          <h4>Meme Generator</h4>
+        </div>
+        <div class="tool-card" onclick="goTo('quiz')">
+          <div>🎯</div>
+          <h4>Language Quiz</h4>
+        </div>
+        <div class="tool-card" onclick="goTo('dict')">
+          <div>📖</div>
+          <h4>Dictionary</h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 2: CHATBOT -->
+    <div id="view-chat" class="page-view">
+      <div class="section-title">Haryanvi AI Chatbot</div>
+      <div id="chat-stream" style="display: flex; flex-direction: column; gap: 8px; min-height: 250px;">
+        <div class="chat-bubble chat-bot">राम-राम लाडले! बता के बात पूछनी सै? जमा देसी जवाब मिलेगा!</div>
+      </div>
+      <div class="input-wrap">
+        <input type="text" id="chat-in" placeholder="Kayi baat likho..." onkeypress="if(event.key==='Enter') sendChat()">
+      </div>
+      <button class="btn-main" onclick="sendChat()">Send Message</button>
+    </div>
+
+    <!-- PAGE 3: TOOLS (MEME, DIALOGUE, QUIZ, DICT) -->
+    <div id="view-tools" class="page-view">
+      
+      <!-- Meme Maker -->
+      <div class="card" id="tool-meme">
+        <div class="section-title">Haryanvi Meme Generator</div>
+        <input type="text" id="meme-top" placeholder="Top Text (e.g. जब कोई पूछे)">
+        <input type="text" id="meme-bot" placeholder="Bottom Text (e.g. मन्नै ना बेरा भाई!)">
+        <canvas id="meme-canvas" width="350" height="220"></canvas>
+        <div class="action-row">
+          <button class="btn-main" onclick="drawMeme()">Preview Meme</button>
+          <button class="btn-icon" onclick="downloadMeme()">Save</button>
+        </div>
+      </div>
+
+      <!-- Dialogue -->
+      <div class="card" id="tool-dialogue">
+        <div class="section-title">Status & Dialogue Maker</div>
+        <select id="diag-vibe" class="select-box">
+          <option value="att">Attitude / Roab</option>
+          <option value="fun">Desi Comedy</option>
+          <option value="bio">Instagram Bio</option>
+        </select>
+        <button class="btn-main" onclick="genDialogue()">Generate</button>
+        <div class="output-box" id="diag-box">Dialogue yahan aayega...</div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="card" id="tool-quiz">
+        <div class="section-title">Haryanvi Quiz</div>
+        <p id="quiz-q" style="font-size:0.95rem; font-weight:700;">'किते' ka sahi matlab kya hota hai?</p>
+        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+          <button class="tab-btn" onclick="checkQuiz(0)">1. Kahan (Where)</button>
+          <button class="tab-btn" onclick="checkQuiz(1)">2. Kab (When)</button>
+          <button class="tab-btn" onclick="checkQuiz(2)">3. Kaun (Who)</button>
+        </div>
+        <div id="quiz-res" style="font-size: 0.85rem; color: #FF762E; margin-top: 4px;"></div>
+      </div>
+
+      <!-- Dictionary -->
+      <div class="card" id="tool-dict">
+        <div class="section-title">Haryanvi Shabdkosh</div>
+        <input type="text" id="dict-search" placeholder="Shabd search karo (e.g. बावळा, घणा)..." onkeyup="searchDict()">
+        <div id="dict-res" style="font-size: 0.9rem; color: #8e95a5;">Shabd type karo...</div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: PROFILE -->
+    <div id="view-profile" class="page-view">
+      <div class="card" style="text-align: center; padding: 20px;">
+        <div style="width: 60px; height: 60px; background: #FF762E; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; margin: 0 auto 10px;">H</div>
+        <h3>Haryanvi AI User</h3>
+        <p style="font-size: 0.8rem; color: #8e95a5;">Free Web Edition</p>
+        <div style="margin-top: 15px; text-align: left; font-size: 0.85rem; color: #8e95a5; display: flex; flex-direction: column; gap: 8px;">
+          <div>Device: Android Mobile Optimized</div>
+          <div>Audio Engine: Native Speech API</div>
+          <div>Dialects Loaded: Rohtak, Hisar, Jind</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <button class="nav-item active" onclick="switchNav('home', this)">
+      <div>🏠</div>
+      <div>Home</div>
+    </button>
+    <button class="nav-item" onclick="switchNav('chat', this)">
+      <div>💬</div>
+      <div>Chatbot</div>
+    </button>
+    <button class="nav-item" onclick="switchNav('tools', this)">
+      <div>⚡</div>
+      <div>Explore</div>
+    </button>
+    <button class="nav-item" onclick="switchNav('profile', this)">
+      <div>👤</div>
+      <div>Profile</div>
+    </button>
+  </div>
+
+  <script>
+    let mode = 'hi';
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('tab-hi').classList.toggle('active', m === 'hi');
+      document.getElementById('tab-en').classList.toggle('active', m === 'en');
+    }
+
+    function switchNav(page, el) {
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      document.getElementById('view-' + page).classList.add('active');
+      el.classList.add('active');
+    }
+
+    function goTo(tool) {
+      switchNav('tools', document.querySelectorAll('.nav-item')[2]);
+      const target = document.getElementById('tool-' + tool);
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function translateNow() {
+      const txt = document.getElementById('src-text').value.trim();
+      const dial = document.getElementById('dialect').value;
+      if (!txt) return;
+
+      const mapHi = [
+        [/कहाँ जा रहे हो/g, dial === 'hisar' ? 'कठे जावे सै?' : 'कित जा रह्या सै?'],
+        [/क्या कर रहे हो/g, 'के कर रह्या सै?'],
+        [/यहाँ आओ/g, 'उरे नै आ'],
+        [/मुझे नहीं पता/g, 'मन्नै ना बेरा'],
+        [/खाना खा लिया/g, 'रोटी खा ली के?'],
+        [/अच्छा/g, 'सुथरा'],
+        [/नहीं/g, 'कोनी'],
+        [/मुझे/g, 'मन्नै'],
+        [/तुझे/g, 'तन्नै']
+      ];
+
+      const mapEn = [
+        [/where are you going/gi, dial === 'hisar' ? 'कठे जावे सै?' : 'कित जा रह्या सै?'],
+        [/what are you doing/gi, 'के कर रह्या सै?'],
+        [/come here/gi, 'उरे नै आ'],
+        [/i do not know/gi, 'मन्नै ना बेरा']
+      ];
+
+      let res = txt;
+      const list = mode === 'hi' ? mapHi : mapEn;
+      list.forEach(([reg, val]) => res = res.replace(reg, val));
+
+      if (res === txt) res = res + " (देसी टोन: जमा ठीक बात सै)";
+      document.getElementById('res-box').innerText = res;
+    }
+
+    function clearInput() {
+      document.getElementById('src-text').value = '';
+      document.getElementById('res-box').innerText = 'Result yahan aayega...';
+    }
+
+    function copyResult() {
+      navigator.clipboard.writeText(document.getElementById('res-box').innerText);
+      alert('Copied!');
+    }
+
+    function playAudio() {
+      const txt = document.getElementById('res-box').innerText;
+      if (!txt) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(txt);
+      u.lang = 'hi-IN';
+      u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    }
+
+    function startMic() {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) return alert('Mic not supported in this browser');
+      const r = new SR();
+      r.lang = mode === 'hi' ? 'hi-IN' : 'en-US';
+      r.onresult = (e) => {
+        document.getElementById('src-text').value = e.results[0][0].transcript;
+        translateNow();
+      };
+      r.start();
+    }
+
+    function sendChat() {
+      const f = document.getElementById('chat-in');
+      const q = f.value.trim();
+      if (!q) return;
+
+      const stream = document.getElementById('chat-stream');
+      stream.innerHTML += `<div class="chat-bubble chat-user">${q}</div>`;
+      f.value = '';
+
+      setTimeout(() => {
+        const answers = [
+          "लाडले बात जमा खरी सै, थारे भाई प पूरा भरोसा राख!",
+          "अरे छोरया, घणी टेंशन ना लिया कर, सब ठीक हो ज्यागा।",
+          "के हाल चाल सै भाई? मौज ले, जिंदगी एक बारी मिलै सै!"
+        ];
+        const rep = answers[Math.floor(Math.random() * answers.length)];
+        stream.innerHTML += `<div class="chat-bubble chat-bot">${rep}</div>`;
+        stream.scrollTop = stream.scrollHeight;
+      }, 500);
+    }
+
+    function genDialogue() {
+      const v = document.getElementById('diag-vibe').value;
+      const list = {
+        att: ["रूका तो दुनिया करै सै, म्हारा तो खौफ बोलै सै! 🔥", "पहचान अपणे दम प सै लाडलो, किसे के तलवे चाट के महल कोनी बणाए! 💯"],
+        fun: ["ताऊ बोल्या: ज्यादा ज्ञान मत बांट, चारा काट ला खेत का! 😂", "डॉक्टर: बीड़ी छोड़ दे ताऊ। ताऊ: फेफड़े मजबूत करण खातर पियूं सूं के! 🤣"],
+        bio: ["📍 Haryana 09 | देसी खून, शांत मिजाज 🚜", "अखाड़े की माटी अर मां का आशीर्वाद 💪"]
+      };
+      const arr = list[v];
+      document.getElementById('diag-box').innerText = arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function drawMeme() {
+      const c = document.getElementById('meme-canvas');
+      const ctx = c.getContext('2d');
+      const top = document.getElementById('meme-top').value || "जब कोई बोले";
+      const bot = document.getElementById('meme-bot').value || "मन्नै ना बेरा!";
+
+      ctx.fillStyle = "#101114";
+      ctx.fillRect(0, 0, c.width, c.height);
+
+      ctx.fillStyle = "#FF762E";
+      ctx.font = "bold 16px 'Plus Jakarta Sans'";
+      ctx.textAlign = "center";
+      ctx.fillText(top, c.width / 2, 40);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 20px 'Noto Sans Devanagari'";
+      ctx.fillText(bot, c.width / 2, 130);
+
+      ctx.fillStyle = "#8e95a5";
+      ctx.font = "11px 'Plus Jakarta Sans'";
+      ctx.fillText("Haryanvi AI Meme", c.width / 2, 190);
+    }
+
+    function downloadMeme() {
+      const a = document.createElement('a');
+      a.download = 'haryanvi-meme.png';
+      a.href = document.getElementById('meme-canvas').toDataURL();
+      a.click();
+    }
+
+    function checkQuiz(idx) {
+      const res = document.getElementById('quiz-res');
+      if (idx === 0) {
+        res.innerHTML = "✅ Bilkul Sahi! (Correct: कित / किते = कहाँ)";
+      } else {
+        res.innerHTML = "❌ Galat! Sahi uttar: 'कहाँ (Where)' hota hai.";
+      }
+    }
+
+    const dict = {
+      "बावळा": "पागल या नासमझ (Foolish/Crazy)",
+      "घणा": "बहुत ज्यादा (A lot / Very much)",
+      "टाबर": "बच्चे (Children)",
+      "सुथरा": "सुंदर / बढ़िया (Handsome/Good)",
+      "मरोड़": "घमंड / ऐंठ (Attitude)"
+    };
+
+    function searchDict() {
+      const q = document.getElementById('dict-search').value.trim();
+      const r = document.getElementById('dict-res');
+      if (!q) { r.innerText = "Shabd type karo..."; return; }
+      r.innerText = dict[q] ? `${q}: ${dict[q]}` : "Shabd shabdkosh me nahi mila.";
+    }
+
+    // Default Meme Draw
+    drawMeme();
+  </script>
+</body>
+</html>
